@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
 CXX           = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
-DEFINES       = -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_QML_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -mmacosx-version-min=10.7 -Wall -W -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -mmacosx-version-min=10.7 -Wall -W -fPIC $(DEFINES)
-INCPATH       = -I../Oscilloscope -I. -I../Oscilloscope/Libraries/qextserialport/src -I../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers -I../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AGL.framework/Headers -I. -I../../../../Qt/5.5/clang_64/mkspecs/macx-clang -F/Users/harrybeadle/Qt/5.5/clang_64/lib
+CXXFLAGS      = -pipe -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7 -Wall -W -fPIC $(DEFINES)
+INCPATH       = -I../Oscilloscope -I. -I../Oscilloscope/Libraries/qextserialport/src -I../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers -I../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers -I../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AGL.framework/Headers -I. -I../../../../Qt/5.5/clang_64/mkspecs/macx-clang -F/Users/harrybeadle/Qt/5.5/clang_64/lib
 QMAKE         = /Users/harrybeadle/Qt/5.5/clang_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -35,8 +35,8 @@ COMPRESS      = gzip -9f
 DISTNAME      = Oscilloscope1.0.0
 DISTDIR = /Users/harrybeadle/Developer/Facebook\ Hackathon/Host/build-Oscilloscope-Desktop_Qt_5_5_1_clang_64bit-Debug/.tmp/Oscilloscope1.0.0
 LINK          = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
-LFLAGS        = -headerpad_max_install_names -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -mmacosx-version-min=10.7 -Wl,-rpath,/Users/harrybeadle/Qt/5.5/clang_64/lib
-LIBS          = $(SUBLIBS) -F/Users/harrybeadle/Qt/5.5/clang_64/lib -framework IOKit -framework CoreFoundation -framework QtWidgets -framework QtGui -framework QtCore -framework DiskArbitration -framework OpenGL -framework AGL 
+LFLAGS        = -headerpad_max_install_names -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -stdlib=libc++ -mmacosx-version-min=10.7 -Wl,-rpath,/Users/harrybeadle/Qt/5.5/clang_64/lib
+LIBS          = $(SUBLIBS) -F/Users/harrybeadle/Qt/5.5/clang_64/lib -framework IOKit -framework CoreFoundation -framework QtPrintSupport -framework QtWidgets -framework QtGui -framework QtCore -framework DiskArbitration -framework OpenGL -framework AGL 
 AR            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar cq
 RANLIB        = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib -s
 SED           = sed
@@ -53,14 +53,20 @@ SOURCES       = ../Oscilloscope/Libraries/qextserialport/src/qextserialport.cpp 
 		../Oscilloscope/Libraries/qextserialport/src/qextserialport_unix.cpp \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator_osx.cpp \
 		../Oscilloscope/main.cpp \
-		../Oscilloscope/window.cpp moc_window.cpp
+		../Oscilloscope/window.cpp \
+		../Oscilloscope/qcustomplot.cpp \
+		../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.cpp moc_window.cpp \
+		moc_qcustomplot.cpp
 OBJECTS       = qextserialport.o \
 		qextserialenumerator.o \
 		qextserialport_unix.o \
 		qextserialenumerator_osx.o \
 		main.o \
 		window.o \
-		moc_window.o
+		qcustomplot.o \
+		arduino-serial-lib.o \
+		moc_window.o \
+		moc_qcustomplot.o
 DIST          = ../../../../Qt/5.5/clang_64/mkspecs/features/spec_pre.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/qdevice.pri \
 		../../../../Qt/5.5/clang_64/mkspecs/features/device_config.prf \
@@ -189,6 +195,7 @@ DIST          = ../../../../Qt/5.5/clang_64/mkspecs/features/spec_pre.prf \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialport.pri \
 		../../../../Qt/5.5/clang_64/mkspecs/features/resolve_config.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/default_post.prf \
+		../../../../Qt/5.5/clang_64/mkspecs/features/c++11.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/mac/sdk.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/mac/default_post.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/mac/objective_c.prf \
@@ -210,12 +217,16 @@ DIST          = ../../../../Qt/5.5/clang_64/mkspecs/features/spec_pre.prf \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialport_global.h \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialport_p.h \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator_p.h \
-		../Oscilloscope/window.h ../Oscilloscope/Libraries/qextserialport/src/qextserialport.cpp \
+		../Oscilloscope/window.h \
+		../Oscilloscope/qcustomplot.h \
+		../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.h ../Oscilloscope/Libraries/qextserialport/src/qextserialport.cpp \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.cpp \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialport_unix.cpp \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator_osx.cpp \
 		../Oscilloscope/main.cpp \
-		../Oscilloscope/window.cpp
+		../Oscilloscope/window.cpp \
+		../Oscilloscope/qcustomplot.cpp \
+		../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.cpp
 QMAKE_TARGET  = Oscilloscope
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = Oscilloscope.app/Contents/MacOS/Oscilloscope
@@ -225,6 +236,8 @@ QMAKE_COMP_QMAKE_OBJECTIVE_CFLAGS = -pipe \
 		-g \
 		-isysroot \
 		/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk \
+		-std=c++11 \
+		-stdlib=libc++ \
 		-mmacosx-version-min=10.7 \
 		-Wall \
 		-W
@@ -385,6 +398,7 @@ Makefile: ../Oscilloscope/Oscilloscope.pro ../../../../Qt/5.5/clang_64/mkspecs/m
 		../Oscilloscope/Libraries/qextserialport/src/qextserialport.pri \
 		../../../../Qt/5.5/clang_64/mkspecs/features/resolve_config.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/default_post.prf \
+		../../../../Qt/5.5/clang_64/mkspecs/features/c++11.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/mac/sdk.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/mac/default_post.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/mac/objective_c.prf \
@@ -402,6 +416,7 @@ Makefile: ../Oscilloscope/Oscilloscope.pro ../../../../Qt/5.5/clang_64/mkspecs/m
 		../../../../Qt/5.5/clang_64/mkspecs/features/yacc.prf \
 		../../../../Qt/5.5/clang_64/mkspecs/features/lex.prf \
 		../Oscilloscope/Oscilloscope.pro \
+		/Users/harrybeadle/Qt/5.5/clang_64/lib/QtPrintSupport.framework/QtPrintSupport.prl \
 		/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/QtWidgets.prl \
 		/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/QtGui.prl \
 		/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/QtCore.prl
@@ -534,6 +549,7 @@ Makefile: ../Oscilloscope/Oscilloscope.pro ../../../../Qt/5.5/clang_64/mkspecs/m
 ../Oscilloscope/Libraries/qextserialport/src/qextserialport.pri:
 ../../../../Qt/5.5/clang_64/mkspecs/features/resolve_config.prf:
 ../../../../Qt/5.5/clang_64/mkspecs/features/default_post.prf:
+../../../../Qt/5.5/clang_64/mkspecs/features/c++11.prf:
 ../../../../Qt/5.5/clang_64/mkspecs/features/mac/sdk.prf:
 ../../../../Qt/5.5/clang_64/mkspecs/features/mac/default_post.prf:
 ../../../../Qt/5.5/clang_64/mkspecs/features/mac/objective_c.prf:
@@ -551,6 +567,7 @@ Makefile: ../Oscilloscope/Oscilloscope.pro ../../../../Qt/5.5/clang_64/mkspecs/m
 ../../../../Qt/5.5/clang_64/mkspecs/features/yacc.prf:
 ../../../../Qt/5.5/clang_64/mkspecs/features/lex.prf:
 ../Oscilloscope/Oscilloscope.pro:
+/Users/harrybeadle/Qt/5.5/clang_64/lib/QtPrintSupport.framework/QtPrintSupport.prl:
 /Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/QtWidgets.prl:
 /Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/QtGui.prl:
 /Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/QtCore.prl:
@@ -583,8 +600,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../Oscilloscope/Libraries/qextserialport/src/qextserialport.h ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.h ../Oscilloscope/Libraries/qextserialport/src/qextserialport_global.h ../Oscilloscope/Libraries/qextserialport/src/qextserialport_p.h ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator_p.h ../Oscilloscope/window.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../Oscilloscope/Libraries/qextserialport/src/qextserialport.cpp ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.cpp ../Oscilloscope/Libraries/qextserialport/src/qextserialport_unix.cpp ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator_osx.cpp ../Oscilloscope/main.cpp ../Oscilloscope/window.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Oscilloscope/Libraries/qextserialport/src/qextserialport.h ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.h ../Oscilloscope/Libraries/qextserialport/src/qextserialport_global.h ../Oscilloscope/Libraries/qextserialport/src/qextserialport_p.h ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator_p.h ../Oscilloscope/window.h ../Oscilloscope/qcustomplot.h ../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../Oscilloscope/Libraries/qextserialport/src/qextserialport.cpp ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.cpp ../Oscilloscope/Libraries/qextserialport/src/qextserialport_unix.cpp ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator_osx.cpp ../Oscilloscope/main.cpp ../Oscilloscope/window.cpp ../Oscilloscope/qcustomplot.cpp ../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../Oscilloscope/window.ui $(DISTDIR)/
 
 
@@ -611,28 +628,153 @@ compiler_objective_c_make_all:
 compiler_objective_c_clean:
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_qextserialport.cpp moc_qextserialenumerator.cpp moc_window.cpp
+compiler_moc_header_make_all: moc_qextserialport.cpp moc_qextserialenumerator.cpp moc_window.cpp moc_qcustomplot.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_qextserialport.cpp moc_qextserialenumerator.cpp moc_window.cpp
+	-$(DEL_FILE) moc_qextserialport.cpp moc_qextserialenumerator.cpp moc_window.cpp moc_qcustomplot.cpp
 moc_qextserialport.cpp: ../Oscilloscope/Libraries/qextserialport/src/qextserialport_global.h \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialport.h
-	/Users/harrybeadle/Qt/5.5/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/harrybeadle/Qt/5.5/clang_64/mkspecs/macx-clang -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope' -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope/Libraries/qextserialport/src' -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -F/Users/harrybeadle/Qt/5.5/clang_64/lib ../Oscilloscope/Libraries/qextserialport/src/qextserialport.h -o moc_qextserialport.cpp
+	/Users/harrybeadle/Qt/5.5/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/harrybeadle/Qt/5.5/clang_64/mkspecs/macx-clang -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope' -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope/Libraries/qextserialport/src' -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -F/Users/harrybeadle/Qt/5.5/clang_64/lib ../Oscilloscope/Libraries/qextserialport/src/qextserialport.h -o moc_qextserialport.cpp
 
 moc_qextserialenumerator.cpp: ../Oscilloscope/Libraries/qextserialport/src/qextserialport_global.h \
 		../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.h
-	/Users/harrybeadle/Qt/5.5/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/harrybeadle/Qt/5.5/clang_64/mkspecs/macx-clang -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope' -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope/Libraries/qextserialport/src' -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -F/Users/harrybeadle/Qt/5.5/clang_64/lib ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.h -o moc_qextserialenumerator.cpp
+	/Users/harrybeadle/Qt/5.5/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/harrybeadle/Qt/5.5/clang_64/mkspecs/macx-clang -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope' -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope/Libraries/qextserialport/src' -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -F/Users/harrybeadle/Qt/5.5/clang_64/lib ../Oscilloscope/Libraries/qextserialport/src/qextserialenumerator.h -o moc_qextserialenumerator.cpp
 
 moc_window.cpp: ../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../Oscilloscope/qcustomplot.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QPointer \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qpointer.h \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPainter \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpainter.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPixmap \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QVector \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QString \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDateTime \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMultiMap \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QFlags \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qflags.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QStack \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstack.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QCache \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qcache.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMargins \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmargins.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmath.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qnumeric.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrinter \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprinter.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrintEngine \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprintengine.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QtNumeric \
 		../Oscilloscope/window.h
-	/Users/harrybeadle/Qt/5.5/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/harrybeadle/Qt/5.5/clang_64/mkspecs/macx-clang -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope' -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope/Libraries/qextserialport/src' -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -F/Users/harrybeadle/Qt/5.5/clang_64/lib ../Oscilloscope/window.h -o moc_window.cpp
+	/Users/harrybeadle/Qt/5.5/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/harrybeadle/Qt/5.5/clang_64/mkspecs/macx-clang -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope' -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope/Libraries/qextserialport/src' -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -F/Users/harrybeadle/Qt/5.5/clang_64/lib ../Oscilloscope/window.h -o moc_window.cpp
+
+moc_qcustomplot.cpp: ../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QPointer \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qpointer.h \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPainter \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpainter.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPixmap \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QVector \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QString \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDateTime \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMultiMap \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QFlags \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qflags.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QStack \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstack.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QCache \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qcache.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMargins \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmargins.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmath.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qnumeric.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrinter \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprinter.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrintEngine \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprintengine.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QtNumeric \
+		../Oscilloscope/qcustomplot.h
+	/Users/harrybeadle/Qt/5.5/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/harrybeadle/Qt/5.5/clang_64/mkspecs/macx-clang -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope' -I'/Users/harrybeadle/Developer/Facebook Hackathon/Host/Oscilloscope/Libraries/qextserialport/src' -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtWidgets.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtGui.framework/Headers -I/Users/harrybeadle/Qt/5.5/clang_64/lib/QtCore.framework/Headers -I. -F/Users/harrybeadle/Qt/5.5/clang_64/lib ../Oscilloscope/qcustomplot.h -o moc_qcustomplot.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
 compiler_uic_make_all: ui_window.h
 compiler_uic_clean:
 	-$(DEL_FILE) ui_window.h
-ui_window.h: ../Oscilloscope/window.ui
+ui_window.h: ../Oscilloscope/window.ui \
+		../Oscilloscope/qcustomplot.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QPointer \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qpointer.h \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPainter \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpainter.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPixmap \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QVector \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QString \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDateTime \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMultiMap \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QFlags \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qflags.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QStack \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstack.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QCache \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qcache.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMargins \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmargins.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmath.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qnumeric.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrinter \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprinter.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrintEngine \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprintengine.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QtNumeric
 	/Users/harrybeadle/Qt/5.5/clang_64/bin/uic ../Oscilloscope/window.ui -o ui_window.h
 
 compiler_rez_source_make_all:
@@ -676,6 +818,47 @@ qextserialenumerator_osx.o: ../Oscilloscope/Libraries/qextserialport/src/qextser
 main.o: ../Oscilloscope/main.cpp ../Oscilloscope/window.h \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../Oscilloscope/qcustomplot.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QPointer \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qpointer.h \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPainter \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpainter.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPixmap \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QVector \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QString \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDateTime \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMultiMap \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QFlags \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qflags.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QStack \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstack.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QCache \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qcache.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMargins \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmargins.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmath.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qnumeric.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrinter \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprinter.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrintEngine \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprintengine.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QtNumeric \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QApplication \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../Oscilloscope/main.cpp
@@ -683,11 +866,102 @@ main.o: ../Oscilloscope/main.cpp ../Oscilloscope/window.h \
 window.o: ../Oscilloscope/window.cpp ../Oscilloscope/window.h \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		ui_window.h
+		../Oscilloscope/qcustomplot.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QPointer \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qpointer.h \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPainter \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpainter.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPixmap \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QVector \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QString \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDateTime \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMultiMap \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QFlags \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qflags.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QStack \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstack.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QCache \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qcache.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMargins \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmargins.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmath.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qnumeric.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrinter \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprinter.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrintEngine \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprintengine.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QtNumeric \
+		ui_window.h \
+		../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o window.o ../Oscilloscope/window.cpp
+
+qcustomplot.o: ../Oscilloscope/qcustomplot.cpp ../Oscilloscope/qcustomplot.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QPointer \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qpointer.h \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPainter \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpainter.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QPixmap \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QVector \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QString \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDateTime \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMultiMap \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QFlags \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qflags.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QStack \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qstack.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QCache \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qcache.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QMargins \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmargins.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qmath.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qnumeric.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrinter \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprinter.h \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/QPrintEngine \
+		../../../../Qt/5.5/clang_64/lib/QtPrintSupport.framework/Headers/qprintengine.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QtNumeric
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qcustomplot.o ../Oscilloscope/qcustomplot.cpp
+
+arduino-serial-lib.o: ../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.cpp ../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o arduino-serial-lib.o ../Oscilloscope/Libraries/arduino-serial/arduino-serial-lib.cpp
 
 moc_window.o: moc_window.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_window.o moc_window.cpp
+
+moc_qcustomplot.o: moc_qcustomplot.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_qcustomplot.o moc_qcustomplot.cpp
 
 ####### Install
 

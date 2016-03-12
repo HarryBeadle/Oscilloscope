@@ -36,10 +36,13 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>50</y>
       <width>251</width>
-      <height>131</height>
+      <height>191</height>
      </rect>
+    </property>
+    <property name="toolTipDuration">
+     <number>-1</number>
     </property>
     <property name="tabPosition">
      <enum>QTabWidget::North</enum>
@@ -52,9 +55,6 @@
     </property>
     <property name="movable">
      <bool>true</bool>
-    </property>
-    <property name="toolTipDuration" stdset="0">
-     <number>-1</number>
     </property>
     <widget class="QWidget" name="channel_1">
      <attribute name="title">
@@ -73,14 +73,14 @@
        </rect>
       </property>
       <property name="text">
-       <string>Activate</string>
+       <string>Force Trigger</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="doubleSpinBox">
       <property name="geometry">
        <rect>
         <x>170</x>
-        <y>40</y>
+        <y>90</y>
         <width>67</width>
         <height>25</height>
        </rect>
@@ -90,7 +90,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>70</y>
+        <y>120</y>
         <width>141</width>
         <height>21</height>
        </rect>
@@ -106,7 +106,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>40</y>
+        <y>90</y>
         <width>141</width>
         <height>21</height>
        </rect>
@@ -122,10 +122,23 @@
       <property name="geometry">
        <rect>
         <x>170</x>
-        <y>70</y>
+        <y>120</y>
         <width>67</width>
         <height>25</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_14">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>231</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Free Running</string>
       </property>
      </widget>
     </widget>
@@ -347,7 +360,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>10</y>
+      <y>30</y>
       <width>251</width>
       <height>16</height>
      </rect>
@@ -372,32 +385,6 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="label_10">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>170</y>
-      <width>251</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Measurements</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QTableWidget" name="tableWidget">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>190</y>
-      <width>251</width>
-      <height>421</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QCustomPlot" name="customPlot" native="true">
     <property name="geometry">
      <rect>
@@ -408,6 +395,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>0</y>
+      <width>80</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Connect</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -415,7 +415,7 @@
      <x>0</x>
      <y>0</y>
      <width>1169</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSetup">

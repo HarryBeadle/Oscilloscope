@@ -23,8 +23,8 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QWidget>
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -40,6 +40,7 @@ public:
     QLabel *label_2;
     QLabel *label;
     QDoubleSpinBox *doubleSpinBox_2;
+    QPushButton *pushButton_14;
     QWidget *channel_2;
     QPushButton *pushButton_2;
     QDoubleSpinBox *doubleSpinBox_3;
@@ -60,8 +61,8 @@ public:
     QDoubleSpinBox *doubleSpinBox_8;
     QLabel *label_3;
     QFrame *line;
-    QLabel *label_10;
-    QTableWidget *tableWidget;
+    QCustomPlot *customPlot;
+    QPushButton *pushButton_5;
     QMenuBar *menuBar;
     QMenu *menuSetup;
     QStatusBar *statusBar;
@@ -84,7 +85,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         channel_Settings = new QTabWidget(centralWidget);
         channel_Settings->setObjectName(QStringLiteral("channel_Settings"));
-        channel_Settings->setGeometry(QRect(20, 30, 251, 131));
+        channel_Settings->setGeometry(QRect(20, 50, 251, 191));
         channel_Settings->setToolTipDuration(-1);
         channel_Settings->setTabPosition(QTabWidget::North);
         channel_Settings->setTabShape(QTabWidget::Triangular);
@@ -96,18 +97,21 @@ public:
         pushButton->setGeometry(QRect(10, 10, 231, 24));
         doubleSpinBox = new QDoubleSpinBox(channel_1);
         doubleSpinBox->setObjectName(QStringLiteral("doubleSpinBox"));
-        doubleSpinBox->setGeometry(QRect(170, 40, 67, 25));
+        doubleSpinBox->setGeometry(QRect(170, 90, 67, 25));
         label_2 = new QLabel(channel_1);
         label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(20, 70, 141, 21));
+        label_2->setGeometry(QRect(20, 120, 141, 21));
         label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         label = new QLabel(channel_1);
         label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(20, 40, 141, 21));
+        label->setGeometry(QRect(20, 90, 141, 21));
         label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_2 = new QDoubleSpinBox(channel_1);
         doubleSpinBox_2->setObjectName(QStringLiteral("doubleSpinBox_2"));
-        doubleSpinBox_2->setGeometry(QRect(170, 70, 67, 25));
+        doubleSpinBox_2->setGeometry(QRect(170, 120, 67, 25));
+        pushButton_14 = new QPushButton(channel_1);
+        pushButton_14->setObjectName(QStringLiteral("pushButton_14"));
+        pushButton_14->setGeometry(QRect(10, 40, 231, 24));
         channel_Settings->addTab(channel_1, QString());
         channel_2 = new QWidget();
         channel_2->setObjectName(QStringLiteral("channel_2"));
@@ -171,20 +175,19 @@ public:
         channel_Settings->addTab(channel_4, QString());
         label_3 = new QLabel(centralWidget);
         label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(20, 10, 251, 16));
+        label_3->setGeometry(QRect(20, 30, 251, 16));
         label_3->setAlignment(Qt::AlignCenter);
         line = new QFrame(centralWidget);
         line->setObjectName(QStringLiteral("line"));
         line->setGeometry(QRect(280, 10, 21, 601));
         line->setFrameShape(QFrame::VLine);
         line->setFrameShadow(QFrame::Sunken);
-        label_10 = new QLabel(centralWidget);
-        label_10->setObjectName(QStringLiteral("label_10"));
-        label_10->setGeometry(QRect(20, 170, 251, 16));
-        label_10->setAlignment(Qt::AlignCenter);
-        tableWidget = new QTableWidget(centralWidget);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
-        tableWidget->setGeometry(QRect(20, 190, 251, 421));
+        customPlot = new QCustomPlot(centralWidget);
+        customPlot->setObjectName(QStringLiteral("customPlot"));
+        customPlot->setGeometry(QRect(290, 10, 881, 581));
+        pushButton_5 = new QPushButton(centralWidget);
+        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
+        pushButton_5->setGeometry(QRect(70, 0, 80, 24));
         Window->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(Window);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -211,9 +214,10 @@ public:
     {
         Window->setWindowTitle(QApplication::translate("Window", "Oscilloscope", 0));
         actionConnect_to_Serial->setText(QApplication::translate("Window", "Connect to Serial", 0));
-        pushButton->setText(QApplication::translate("Window", "Activate", 0));
+        pushButton->setText(QApplication::translate("Window", "Force Trigger", 0));
         label_2->setText(QApplication::translate("Window", "Time Base (s)", 0));
         label->setText(QApplication::translate("Window", "Vertical Resolution (V)", 0));
+        pushButton_14->setText(QApplication::translate("Window", "Free Running", 0));
         channel_Settings->setTabText(channel_Settings->indexOf(channel_1), QApplication::translate("Window", "Ch 1", 0));
         channel_Settings->setTabToolTip(channel_Settings->indexOf(channel_1), QApplication::translate("Window", "Settings for Channel 1", 0));
         pushButton_2->setText(QApplication::translate("Window", "Activate", 0));
@@ -230,7 +234,7 @@ public:
         channel_Settings->setTabText(channel_Settings->indexOf(channel_4), QApplication::translate("Window", "Ch 4", 0));
         channel_Settings->setTabToolTip(channel_Settings->indexOf(channel_4), QApplication::translate("Window", "Settings for Channel 2", 0));
         label_3->setText(QApplication::translate("Window", "Channel Settings", 0));
-        label_10->setText(QApplication::translate("Window", "Measurements", 0));
+        pushButton_5->setText(QApplication::translate("Window", "Connect", 0));
         menuSetup->setTitle(QApplication::translate("Window", "Setup", 0));
     } // retranslateUi
 

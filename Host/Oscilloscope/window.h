@@ -8,6 +8,10 @@ namespace Ui {
 class Window;
 }
 
+void checkTrigger(QCustomPlot* plot);
+
+void plotSample(QVector<double> sample, QCustomPlot* plot);
+
 class Window : public QMainWindow
 {
     Q_OBJECT
@@ -15,11 +19,14 @@ class Window : public QMainWindow
 public:
     explicit Window(QWidget *parent = 0);
     ~Window();
-    void plotData(QCustomPlot *customPlot);
-    void plotTestData(QCustomPlot *customPlot);
+    void forceTrigger(QCustomPlot *customPlot);
 
 private slots:
     void on_pushButton_clicked();
+
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_14_clicked();
 
 private:
     Ui::Window *ui;
