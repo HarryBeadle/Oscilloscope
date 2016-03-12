@@ -41,9 +41,6 @@
       <height>131</height>
      </rect>
     </property>
-    <property name="toolTipDuration">
-     <number>-1</number>
-    </property>
     <property name="tabPosition">
      <enum>QTabWidget::North</enum>
     </property>
@@ -55,6 +52,9 @@
     </property>
     <property name="movable">
      <bool>true</bool>
+    </property>
+    <property name="toolTipDuration" stdset="0">
+     <number>-1</number>
     </property>
     <widget class="QWidget" name="channel_1">
      <attribute name="title">
@@ -398,6 +398,16 @@
      </rect>
     </property>
    </widget>
+   <widget class="QCustomPlot" name="customPlot" native="true">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>10</y>
+      <width>881</width>
+      <height>581</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -405,7 +415,7 @@
      <x>0</x>
      <y>0</y>
      <width>1169</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSetup">
@@ -424,6 +434,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

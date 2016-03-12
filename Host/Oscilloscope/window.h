@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <QMainWindow>
+#include "qcustomplot.h"
 
 namespace Ui {
 class Window;
@@ -14,6 +15,8 @@ class Window : public QMainWindow
 public:
     explicit Window(QWidget *parent = 0);
     ~Window();
+    void plotData(QCustomPlot *customPlot);
+    void plotTestData(QCustomPlot *customPlot);
 
 private slots:
     void on_pushButton_clicked();

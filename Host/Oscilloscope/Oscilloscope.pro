@@ -6,17 +6,18 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-include(Libraries/qextserialport/src/qextserialport.pri)
 
 TARGET = Oscilloscope
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        window.cpp
+        window.cpp \
+    qcustomplot.cpp
 
-HEADERS  += window.h
+HEADERS  += window.h \
+    qcustomplot.h
 
 FORMS    += window.ui
