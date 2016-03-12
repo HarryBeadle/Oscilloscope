@@ -5,7 +5,7 @@
 //#include <QextSerialPort.h>
 #include <unistd.h>
 #include <iostream>
-#include <thread>
+#include <Qthread>
 
 #define SAMPLE_SIZE 1000
 
@@ -13,51 +13,16 @@ using namespace std;
 
 int port;
 
-volatile bool triggered = false;
-double trigger = 3.3/2;
-QVector<double> sample(SAMPLE_SIZE);
-QVector<double> t(SAMPLE_SIZE);
-
-void checkTrigger(QCustomPlot* plot)
-{
-    while (1) {
-        if (sample[SAMPLE_SIZE/2] < trigger * (3.3/255) < sample[SAMPLE_SIZE/2 - 1]) {
-            triggered = true;
-            plotSample(sample, plot);
-        }
-        int n;
-        int b[1];
-        do {
-            n = read(port, b, 1);
-        } while (n == -1 || n == 0);
-        sample.insert(0, (double) b[0]);
-    }
-}
-
-void plotSample(QVector<double> sample, QCustomPlot* plot)
-{
-    plot->graph(0)->setData(t, sample);
-    plot->replot();
-}
-
 Window::Window(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Window)
 {
     ui->setupUi(this);
     ui->customPlot->addGraph();
-
-    for (int i = 0; i < SAMPLE_SIZE; i++) {
-        t[i] = i;
-    }
-
-    class thread checkTriggerThread (checkTrigger, ui->customPlot);
-
 }
 
 void Window::forceTrigger(QCustomPlot *customPlot)
 {
-    //customPlot->clearGraphs();
     qDebug() << "Start" << endl;
     QVector<double> x(SAMPLE_SIZE), y(SAMPLE_SIZE); // initialize with entries 0..100
     unsigned int b[1];
