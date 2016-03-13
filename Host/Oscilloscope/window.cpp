@@ -76,7 +76,42 @@ class autoTrigger : public QThread
     }
 };
 
+class readings : public QThread
+{
+
+    void run()
+    {
+        bool maxFound = false;
+        double firstMax = sample[0];
+        int firstMaxIndex = 0;
+        int secondMaxIndex = 0;
+
+        for (int i = 1; i < SAMPLE_SIZE -1; i++){
+            if (maxFound){
+                if (sample[i] >= (0.95*firstMax)){
+                    secondMaxIndex = i;
+                }
+            }else{
+                if (sample[i] > firstMax){
+                    firstMax = sample[i];
+                    firstMaxIndex = i;
+                }
+                else{
+                    if (sample[i+1] < firstMax){
+                        maxFound = true;
+                        i++; // next 2 are less, max found
+                    }
+                }
+            }
+        }
+
+        if (! maxFound) freq = 0.0;
+        else freq = FSAMP / (secondMaxIndex - firstMaxIndex);
+    }
+};
+
 autoTrigger* autoTrig;
+readings* measurements;
 
 Window::Window(QWidget *parent) :
     QMainWindow(parent),
