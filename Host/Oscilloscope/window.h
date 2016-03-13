@@ -26,6 +26,8 @@ private slots:
     void on_pushButton_6_clicked();
     void on_triggerSpinBox_editingFinished();
 
+    void on_pushButton_3_clicked();
+
 private:
     Ui::Window *ui;
 };

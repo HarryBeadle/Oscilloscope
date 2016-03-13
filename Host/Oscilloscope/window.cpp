@@ -245,3 +245,8 @@ void Window::on_triggerSpinBox_editingFinished()
     plot->graph(1)->setData(t, t_line);
     plot->replot();
 }
+
+void Window::on_pushButton_3_clicked()
+{
+    plot->savePng("/Users/harrybeadle/waveform.png");
+}
