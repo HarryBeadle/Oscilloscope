@@ -10389,6 +10389,7 @@ void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
   
   emit afterReplot();
   mReplotting = false;
+  return;
 }
 
 /*!
