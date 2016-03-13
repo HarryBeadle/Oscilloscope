@@ -9,6 +9,7 @@
 #include <termios.h>
 
 #define SAMPLE_SIZE 500
+#define FSAMP 1000
 
 using namespace std;
 
@@ -22,10 +23,13 @@ QVector<double> t(SAMPLE_SIZE);
 QCustomPlot* plot;
 int port;
 bool autotrig_on = false;
+double freq = 0;
 
 // Start Thread Instances
 replotter* plotter;
 autoTrigger* autoTrig;
+readings* measurement;
+update_measurements* updater;
 
 /* replotter class QThread
     initalised with a sample, plots that then exits */
@@ -72,12 +76,61 @@ void autoTrigger::run(void)
         if ((sample[SAMPLE_SIZE/2] > trigger) && (trigger > sample[SAMPLE_SIZE/2 - 1])) {
             plotter = new replotter(sample);
             plotter->start();
+            measurement = new readings();
+            measurement->start();
+            while (measurement->isRunning()) continue;
+            updater->start();
             resample();
         }
         if (auto_die) {
             auto_die = false;
             return;
         }
+    }
+}
+
+void readings::run(void)
+{
+    bool maxFound = false;
+    double firstMax = sample[SAMPLE_SIZE/4];
+    int firstMaxIndex = SAMPLE_SIZE/4;
+    int secondMaxIndex = 0;
+
+    for (int i = SAMPLE_SIZE/4; i < SAMPLE_SIZE; i++) {
+        if (maxFound) {
+            if (sample[i] >= (0.99*firstMax)) {
+                secondMaxIndex = i;
+                break;
+            }
+        } else {
+            if (sample[i] > firstMax) {
+                firstMax = sample[i];
+                firstMaxIndex = i;
+            }
+            else{
+                if (sample[i+3] < firstMax) {
+                    maxFound = true;
+                    i += 3; // next 2 are less, max found
+                }
+            }
+        }
+    }
+    if (!maxFound) freq += 0.0;
+    else freq += FSAMP / (secondMaxIndex - firstMaxIndex);
+    freq /= 2;
+}
+
+update_measurements::update_measurements(Ui::Window* interface)
+{
+    ui = interface;
+}
+
+double freq_old = 0;
+
+void update_measurements::run(void) {
+    if (freq != freq_old) {
+        ui->freqNumber->display(freq);
+        freq_old = freq;
     }
 }
 
@@ -113,6 +166,7 @@ Window::Window(QWidget *parent) : QMainWindow(parent), ui(new Ui::Window)
     // Fill the threads
     autoTrig = new autoTrigger();
     plotter = new replotter(sample);
+    updater = new update_measurements(ui);
 }
 
 void Window::forceTrigger()
@@ -160,7 +214,9 @@ void Window::on_pushButton_2_clicked()
 {
     // Save / Debug Button
     ofstream csvFile;
-    csvFile.open("~/waveform.csv");
+    char* filePath = "/Users/harrybeadle/waveform.csv";
+    csvFile.open(filePath);
+    csvFile << (char*) ui->lineEdit->text().data() << " | 13/3/16" << endl;
     for (int i = 0; i < SAMPLE_SIZE; i++) {
         qDebug() << -SAMPLE_SIZE/2 + i << ", " << sample[i] << endl;
         csvFile << -SAMPLE_SIZE/2 + i << ", " << sample[i] << endl;

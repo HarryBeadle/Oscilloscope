@@ -25,6 +25,7 @@ private slots:
     void on_pushButton_2_clicked();
     void on_pushButton_6_clicked();
     void on_triggerSpinBox_editingFinished();
+
 private:
     Ui::Window *ui;
 };
@@ -40,6 +41,19 @@ public:
 
 class autoTrigger : public QThread
 {
+    void run(void);
+};
+
+class readings : public QThread
+{
+    void run(void);
+};
+
+class update_measurements : public QThread
+{
+public:
+    Ui::Window* ui;
+    update_measurements(Ui::Window* interface);
     void run(void);
 };
 
