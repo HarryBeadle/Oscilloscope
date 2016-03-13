@@ -11,7 +11,7 @@
 
 using namespace std;
 
-double trigger = 3.3/2;
+double trigger = 1.39;
 
 QVector<double> sample(SAMPLE_SIZE);
 QVector<double> t(SAMPLE_SIZE);
@@ -31,9 +31,23 @@ public:
     void run()
     {
         plot->graph(0)->setData(t, sample_stored);
-        plot->replot(QCustomPlot::RefreshPriority::rpImmediate);
+        plot->replot();
     }
 };
+
+void resample(void)
+{
+    serialport_flush(port);
+    int n;
+    unsigned int b[1];
+    b[0] = 0;
+    for (int i = 0; i < SAMPLE_SIZE; i++) {
+        do {
+            n = read(port, b, 1);
+        } while (n == 0 || n == -1);
+        sample[i] = b[0];
+    }
+}
 
 replotter* plotter;
 
@@ -50,10 +64,12 @@ class autoTrigger : public QThread
             } while (n == 0 || n == -1);
             sample.insert(0, (double) b[0]);
             sample.pop_back();
-            if (sample[SAMPLE_SIZE/2] < 115.0 < sample[SAMPLE_SIZE/2 - 1]) {
+            if ((sample[SAMPLE_SIZE/2] > trigger * (255/3.3)) && trigger * (255/3.3) > sample[SAMPLE_SIZE/2 - 1]) {
                 plotter = new replotter(sample);
                 plotter->start();
                 while (!(plotter->isFinished())) continue;
+                usleep(1000);
+                resample();
             }
         }
     }
@@ -86,6 +102,7 @@ Window::Window(QWidget *parent) :
 
     port = serialport_init("/dev/tty.usbserial-FTVTCYMO", 9600);
 
+    resample();
 }
 
 void Window::forceTrigger()

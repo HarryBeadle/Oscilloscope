@@ -10380,10 +10380,12 @@ void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
       painter.fillRect(mViewport, mBackgroundBrush);
     draw(&painter);
     painter.end();
-    if ((refreshPriority == rpHint && mPlottingHints.testFlag(QCP::phForceRepaint)) || refreshPriority==rpImmediate)
-      repaint();
-    else
-      update();
+    update();
+//    if ((refreshPriority == rpHint && mPlottingHints.testFlag(QCP::phForceup)) || refreshPriority==rpImmediate)
+//      //repaint();
+//      update();
+//    else
+//      update();
   } else // might happen if QCustomPlot has width or height zero
     qDebug() << Q_FUNC_INFO << "Couldn't activate painter on buffer. This usually happens because QCustomPlot has width or height zero.";
   

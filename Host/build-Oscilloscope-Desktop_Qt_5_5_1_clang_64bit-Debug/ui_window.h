@@ -38,6 +38,7 @@ public:
     QFrame *line_2;
     QFrame *line_3;
     QPushButton *pushButton_6;
+    QPushButton *pushButton_3;
     QMenuBar *menuBar;
     QMenu *menuSetup;
     QStatusBar *statusBar;
@@ -68,13 +69,13 @@ public:
         customPlot->setGeometry(QRect(290, 10, 881, 581));
         pushButton_5 = new QPushButton(centralWidget);
         pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
-        pushButton_5->setGeometry(QRect(10, 60, 271, 24));
+        pushButton_5->setGeometry(QRect(10, 60, 131, 24));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(10, 90, 271, 24));
+        pushButton->setGeometry(QRect(10, 90, 131, 24));
         pushButton_2 = new QPushButton(centralWidget);
         pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-        pushButton_2->setGeometry(QRect(10, 140, 271, 24));
+        pushButton_2->setGeometry(QRect(150, 60, 131, 24));
         line_2 = new QFrame(centralWidget);
         line_2->setObjectName(QStringLiteral("line_2"));
         line_2->setGeometry(QRect(10, 120, 271, 16));
@@ -88,6 +89,9 @@ public:
         pushButton_6 = new QPushButton(centralWidget);
         pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
         pushButton_6->setGeometry(QRect(10, 10, 271, 24));
+        pushButton_3 = new QPushButton(centralWidget);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        pushButton_3->setGeometry(QRect(150, 90, 131, 24));
         Window->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(Window);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -114,7 +118,8 @@ public:
         pushButton_5->setText(QApplication::translate("Window", "Auto Trigger", 0));
         pushButton->setText(QApplication::translate("Window", "Force Trigger", 0));
         pushButton_2->setText(QApplication::translate("Window", "Export as CSV", 0));
-        pushButton_6->setText(QApplication::translate("Window", "Connect", 0));
+        pushButton_6->setText(QApplication::translate("Window", "Connect to Device", 0));
+        pushButton_3->setText(QApplication::translate("Window", "Export as PNG", 0));
         menuSetup->setTitle(QApplication::translate("Window", "Setup", 0));
     } // retranslateUi
 
