@@ -12,30 +12,35 @@
 
 using namespace std;
 
-double trigger = 1.39;
+// Volatile Variables
+volatile bool auto_die = false;
 
+// Global Variables
+double trigger = 1.39;
 QVector<double> sample(SAMPLE_SIZE);
 QVector<double> t(SAMPLE_SIZE);
 QCustomPlot* plot;
-
 int port;
+bool autotrig_on = false;
 
-class replotter : public QThread
+// Start Thread Instances
+replotter* plotter;
+autoTrigger* autoTrig;
+
+/* replotter class QThread
+    initalised with a sample, plots that then exits */
+replotter::replotter(QVector<double> sample) {
+    sample_stored = sample;
+}
+
+void replotter::run(void)
 {
-private:
-    QVector<double> sample_stored;
-public:
-    replotter(QVector<double> sample) {
-        sample_stored = sample;
-    }
+    plot->graph(0)->setData(t, sample_stored);
+    plot->replot();
+}
 
-    void run()
-    {
-        plot->graph(0)->setData(t, sample_stored);
-        plot->replot();
-    }
-};
-
+/* resample fucntion
+    discards the current buffer and fills it with new data */
 void resample(void)
 {
     //fseek(port,0,SEEK_END);
@@ -51,47 +56,44 @@ void resample(void)
     }
 }
 
-replotter* plotter;
-
-class autoTrigger : public QThread
+/* autoTrigger class QThread
+    Runs the autotriggering mode */
+void autoTrigger::run(void)
 {
-
-    void run()
-    {
-        while (1) {
-            int n;
-            unsigned int b[1];
-            b[0] = 0;
-            do {
-                n = read(port, b, 1);
-            } while (n == 0 || n == -1);
-            sample.insert(0, (double) b[0] * (3.3/255));
-            sample.pop_back();
-            if ((sample[SAMPLE_SIZE/2] > trigger) && (trigger > sample[SAMPLE_SIZE/2 - 1])) {
-                plotter = new replotter(sample);
-                plotter->start();
-                resample();
-            }
+    while (1) {
+        int n;
+        unsigned int b[1];
+        b[0] = 0;
+        do {
+            n = read(port, b, 1);
+        } while (n == 0 || n == -1);
+        sample.insert(0, (double) b[0] * (3.3/255));
+        sample.pop_back();
+        if ((sample[SAMPLE_SIZE/2] > trigger) && (trigger > sample[SAMPLE_SIZE/2 - 1])) {
+            plotter = new replotter(sample);
+            plotter->start();
+            resample();
+        }
+        if (auto_die) {
+            auto_die = false;
+            return;
         }
     }
-};
+}
 
-autoTrigger* autoTrig;
-
-Window::Window(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::Window)
+Window::Window(QWidget *parent) : QMainWindow(parent), ui(new Ui::Window)
 {
+    // Setup the UI
     ui->setupUi(this);
-    ui->customPlot->addGraph(0);
-    ui->customPlot->addGraph(0);
 
+    // Setup the graphs
+    ui->customPlot->addGraph(0);
+    ui->customPlot->addGraph(0);
     plot = ui->customPlot;
-
+    // Genorate Time Scale
     for (int i = 0; i < SAMPLE_SIZE; i++) {
         t[i] = -SAMPLE_SIZE/2 + i;
     }
-
     // Give the axes some labels:
     plot->xAxis->setLabel("Time / Samples");
     plot->yAxis->setLabel("Magnitude / (3.3/255)V");
@@ -101,25 +103,28 @@ Window::Window(QWidget *parent) :
     plot->replot();
     plot->graph(1)->setPen(QPen(QColor(255, 0, 0)));
 
+    // Initalise the graph and serial
     on_triggerSpinBox_editingFinished();
+    on_pushButton_6_clicked();
 
-    port = serialport_init("/dev/tty.usbserial-FTVTCYMO", 9600);
-
+    // Get an Inital Sample
     resample();
 
+    // Fill the threads
     autoTrig = new autoTrigger();
     plotter = new replotter(sample);
 }
 
 void Window::forceTrigger()
 {
-    if (autoTrig->isRunning()) autoTrig->exit();
+    if (autoTrig->isRunning()) auto_die = true;
     resample();
     plotter = new replotter(sample);
     plotter->start();
     while (!(plotter->isFinished())) continue;
 }
 
+// Destructor
 Window::~Window()
 {
     delete ui;
@@ -127,14 +132,28 @@ Window::~Window()
 
 void Window::on_pushButton_clicked()
 {
+    // Force Trigger
+    ui->pushButton_5->setText("Wait");
+    resample();
     forceTrigger();
+    ui->pushButton_5->setText("Run");
+    autotrig_on = false;
 }
 
 void Window::on_pushButton_5_clicked()
 {
     // Auto Trigger Button
-    autoTrig = new autoTrigger();
-    autoTrig->start();
+    if (!(autotrig_on)) {
+        auto_die = false;
+        autoTrig = new autoTrigger();
+        autoTrig->start();
+        ui->pushButton_5->setText("Stop");
+        autotrig_on = true;
+    } else {
+        auto_die = true;
+        ui->pushButton_5->setText("Run");
+        autotrig_on = false;
+    }
 }
 
 void Window::on_pushButton_2_clicked()
@@ -149,21 +168,16 @@ void Window::on_pushButton_2_clicked()
     csvFile.close();
 }
 
+// Serial Connect Button
 void Window::on_pushButton_6_clicked()
 {
     port = serialport_init("/dev/tty.usbserial-FTVTCYMO", 9600);
+    if (port == -1) {
+        ui->pushButton_6->setText("Connect to Device");
+    } else {
+        ui->pushButton_6->setText("Connected");
+    }
 }
-
-//void Window::on_triggerSpinBox_valueChanged(double value)
-//{
-//    trigger = value;
-//    QVector<double> t_line(SAMPLE_SIZE);
-//    for (int i = 0; i < SAMPLE_SIZE; i++) {
-//        t_line[i] = trigger;
-//    }
-//    plot->graph(1)->setData(t, t_line);
-//    plot->replot();
-//}
 
 void Window::on_triggerSpinBox_editingFinished()
 {
