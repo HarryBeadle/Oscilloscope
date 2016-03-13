@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <Qthread>
+#include <termios.h>
 
 #define SAMPLE_SIZE 500
 
@@ -37,7 +38,8 @@ public:
 
 void resample(void)
 {
-    serialport_flush(port);
+    //fseek(port,0,SEEK_END);
+    tcflush(port, TCIFLUSH);
     int n;
     unsigned int b[1];
     b[0] = 0;
@@ -45,7 +47,7 @@ void resample(void)
         do {
             n = read(port, b, 1);
         } while (n == 0 || n == -1);
-        sample[i] = b[0];
+        sample[i] = b[0] * (3.3/255);
     }
 }
 
@@ -53,6 +55,7 @@ replotter* plotter;
 
 class autoTrigger : public QThread
 {
+
     void run()
     {
         while (1) {
@@ -62,13 +65,11 @@ class autoTrigger : public QThread
             do {
                 n = read(port, b, 1);
             } while (n == 0 || n == -1);
-            sample.insert(0, (double) b[0]);
+            sample.insert(0, (double) b[0] * (3.3/255));
             sample.pop_back();
-            if ((sample[SAMPLE_SIZE/2] > trigger * (255/3.3)) && trigger * (255/3.3) > sample[SAMPLE_SIZE/2 - 1]) {
+            if ((sample[SAMPLE_SIZE/2] > trigger) && (trigger > sample[SAMPLE_SIZE/2 - 1])) {
                 plotter = new replotter(sample);
                 plotter->start();
-                while (!(plotter->isFinished())) continue;
-                usleep(1000);
                 resample();
             }
         }
@@ -81,11 +82,10 @@ Window::Window(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Window)
 {
-
-    autoTrig = new autoTrigger();
-
     ui->setupUi(this);
-    ui->customPlot->addGraph();
+    ui->customPlot->addGraph(0);
+    ui->customPlot->addGraph(0);
+
     plot = ui->customPlot;
 
     for (int i = 0; i < SAMPLE_SIZE; i++) {
@@ -97,29 +97,24 @@ Window::Window(QWidget *parent) :
     plot->yAxis->setLabel("Magnitude / (3.3/255)V");
     // Set axes ranges, so we see all data:
     plot->xAxis->setRange(-SAMPLE_SIZE/2, SAMPLE_SIZE/2);
-    plot->yAxis->setRange(0, 255);
+    plot->yAxis->setRange(-0.5, 3.8);
     plot->replot();
+    plot->graph(1)->setPen(QPen(QColor(255, 0, 0)));
+
+    on_triggerSpinBox_editingFinished();
 
     port = serialport_init("/dev/tty.usbserial-FTVTCYMO", 9600);
 
     resample();
+
+    autoTrig = new autoTrigger();
+    plotter = new replotter(sample);
 }
 
 void Window::forceTrigger()
 {
-    int n = -1;
-    unsigned int b[1];
-    b[0] = 0;
-    for (int i = 0; i < SAMPLE_SIZE; i++) {
-        do {
-            n = read(port, b, 1);
-        } while (n == 0 || n == -1);
-        //sample.insert(0, (double) b[0]);
-        //sample.pop_back();
-        qDebug() << b[0] << endl;
-        qDebug() << b << endl;
-        sample[i] = (double) b[0];
-    }
+    if (autoTrig->isRunning()) autoTrig->exit();
+    resample();
     plotter = new replotter(sample);
     plotter->start();
     while (!(plotter->isFinished())) continue;
@@ -138,6 +133,7 @@ void Window::on_pushButton_clicked()
 void Window::on_pushButton_5_clicked()
 {
     // Auto Trigger Button
+    autoTrig = new autoTrigger();
     autoTrig->start();
 }
 
@@ -156,4 +152,26 @@ void Window::on_pushButton_2_clicked()
 void Window::on_pushButton_6_clicked()
 {
     port = serialport_init("/dev/tty.usbserial-FTVTCYMO", 9600);
+}
+
+//void Window::on_triggerSpinBox_valueChanged(double value)
+//{
+//    trigger = value;
+//    QVector<double> t_line(SAMPLE_SIZE);
+//    for (int i = 0; i < SAMPLE_SIZE; i++) {
+//        t_line[i] = trigger;
+//    }
+//    plot->graph(1)->setData(t, t_line);
+//    plot->replot();
+//}
+
+void Window::on_triggerSpinBox_editingFinished()
+{
+    trigger = ui->triggerSpinBox->value();
+    QVector<double> t_line(SAMPLE_SIZE);
+    for (int i = 0; i < SAMPLE_SIZE; i++) {
+        t_line[i] = trigger;
+    }
+    plot->graph(1)->setData(t, t_line);
+    plot->replot();
 }
