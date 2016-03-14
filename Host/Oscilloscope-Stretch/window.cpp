@@ -11,6 +11,31 @@
 #define SAMPLE_SIZE 500
 #define FSAMP 1000
 
+class remote_access : QThread
+{
+private:
+    fstream fs;
+public:
+    remote_access(fstream filestream) {
+        fs = filestream;
+        char input[50];
+    }
+    void run(void) {
+        while (1) {
+            fs >> input;
+            switch (intput[0]) {
+                case 'p':
+                    on_pushButton_3_clicked();
+                    break;
+                case 'c':
+                    on_pushButton_2_clicked();
+                    break;
+                case
+            }
+        }
+    }
+};
+
 using namespace std;
 
 // Volatile Variables
@@ -74,7 +99,7 @@ void autoTrigger::run(void)
         sample.insert(0, (double) b[0] * (3.3/255));
         sample.pop_back();
         if ((sample[SAMPLE_SIZE/2] > trigger) && (trigger > sample[SAMPLE_SIZE/2 - 1])) {
-            lotter = new replotter(sample);p
+            plotter = new replotter(sample);
             plotter->start();
             measurement = new readings();
             measurement->start();
