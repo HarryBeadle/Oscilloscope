@@ -24,12 +24,20 @@ QCustomPlot* plot;
 int port;
 bool autotrig_on = false;
 double freq = 0;
+bool connected = false;
 
 // Start Thread Instances
 replotter* plotter;
 autoTrigger* autoTrig;
 readings* measurement;
 update_measurements* updater;
+
+void not_connected_box(void)
+{
+    QMessageBox msgBox;
+    msgBox.setText("You are not connected to a device.");
+    msgBox.exec();
+}
 
 /* replotter class QThread
     initalised with a sample, plots that then exits */
@@ -74,7 +82,7 @@ void autoTrigger::run(void)
         sample.insert(0, (double) b[0] * (3.3/255));
         sample.pop_back();
         if ((sample[SAMPLE_SIZE/2] > trigger) && (trigger > sample[SAMPLE_SIZE/2 - 1])) {
-            lotter = new replotter(sample);p
+            plotter = new replotter(sample);
             plotter->start();
             measurement = new readings();
             measurement->start();
@@ -141,6 +149,8 @@ Window::Window(QWidget *parent) : QMainWindow(parent), ui(new Ui::Window)
     // Setup the UI
     ui->setupUi(this);
 
+    this->setStyleSheet("background-color: white;");
+
     // Setup the graphs
     ui->customPlot->addGraph(0);
     ui->customPlot->addGraph(0);
@@ -150,20 +160,16 @@ Window::Window(QWidget *parent) : QMainWindow(parent), ui(new Ui::Window)
         t[i] = -SAMPLE_SIZE/2 + i;
     }
     // Give the axes some labels:
-    plot->xAxis->setLabel("Time / Samples");
-    plot->yAxis->setLabel("Magnitude / (3.3/255)V");
+    plot->xAxis->setLabel("Sample Number");
+    plot->yAxis->setLabel("Magnitude / V");
     // Set axes ranges, so we see all data:
     plot->xAxis->setRange(-SAMPLE_SIZE/2, SAMPLE_SIZE/2);
     plot->yAxis->setRange(-0.5, 3.8);
     plot->replot();
     plot->graph(1)->setPen(QPen(QColor(255, 0, 0)));
 
-    // Initalise the graph and serial
+    // Initalise the graph
     on_triggerSpinBox_editingFinished();
-    on_pushButton_6_clicked();
-
-    // Get an Inital Sample
-    resample();
 
     // Fill the threads
     autoTrig = new autoTrigger();
@@ -188,6 +194,7 @@ Window::~Window()
 
 void Window::on_pushButton_clicked()
 {
+    if (!connected) return not_connected_box();
     // Force Trigger
     ui->pushButton_5->setText("Wait");
     resample();
@@ -198,6 +205,7 @@ void Window::on_pushButton_clicked()
 
 void Window::on_pushButton_5_clicked()
 {
+    if (!connected) return not_connected_box();
     // Auto Trigger Button
     if (!(autotrig_on)) {
         auto_die = false;
@@ -215,10 +223,11 @@ void Window::on_pushButton_5_clicked()
 void Window::on_pushButton_2_clicked()
 {
     // Save / Debug Button
+    QString path = QFileDialog::getSaveFileName(this,
+        tr("Save CSV"), "/", tr("Comma Seperated Variable Files (*.csv)"));
     ofstream csvFile;
-    char* filePath = "/Users/harrybeadle/waveform.csv";
-    csvFile.open(filePath);
-    csvFile << (char*) ui->lineEdit->text().data() << " | 13/3/16" << endl;
+    csvFile.open(path.toLatin1().data());
+    csvFile << (char*) ui->lineEdit->text().toLatin1().data() << " | " << QDate::currentDate().toString("d/M/yy").toLatin1().data() << endl;
     for (int i = 0; i < SAMPLE_SIZE; i++) {
         qDebug() << -SAMPLE_SIZE/2 + i << ", " << sample[i] << endl;
         csvFile << -SAMPLE_SIZE/2 + i << ", " << sample[i] << endl;
@@ -229,12 +238,17 @@ void Window::on_pushButton_2_clicked()
 // Serial Connect Button
 void Window::on_pushButton_6_clicked()
 {
-    port = serialport_init("/dev/tty.usbserial-FTVTCYMO", 9600);
+    QMessageBox msgBox;
+    port = serialport_init(ui->lineEdit_2->text().toLatin1().data(), 9600);
     if (port == -1) {
-        ui->pushButton_6->setText("Connect to Device");
+        msgBox.setText("No device detected.");
+        connected = false;
     } else {
-        ui->pushButton_6->setText("Connected");
+        msgBox.setText("Conected, click okay to begin sampling.");
+        connected = true;
+        resample();
     }
+    msgBox.exec();
 }
 
 void Window::on_triggerSpinBox_editingFinished()
@@ -250,5 +264,19 @@ void Window::on_triggerSpinBox_editingFinished()
 
 void Window::on_pushButton_3_clicked()
 {
-    plot->savePng("/Users/harrybeadle/waveform.png");
+    QString path = QFileDialog::getSaveFileName(this,
+        tr("Save Image"), "/", tr("Image Files (*.png)"));
+    qDebug() << path << endl;
+    plot->savePng(path);
+}
+
+void Window::on_triggerSpinBox_valueChanged(double arg1)
+{
+    trigger = ui->triggerSpinBox->value();
+    QVector<double> t_line(SAMPLE_SIZE);
+    for (int i = 0; i < SAMPLE_SIZE; i++) {
+        t_line[i] = trigger;
+    }
+    plot->graph(1)->setData(t, t_line);
+    plot->replot();
 }
