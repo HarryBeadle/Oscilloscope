@@ -6,6 +6,7 @@ MAX = 130
 N = 32
 values = [0]*(N)
 
+# sinusoid parameters
 mid = MAX/2
 half_range = 60
 incr = 2*pi/N
@@ -29,6 +30,4 @@ def sawtooth():
 
 sawtooth()
 print values
-#values = values + values[::-1]
-#print values
 print len(values)
