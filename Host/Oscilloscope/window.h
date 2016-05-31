@@ -28,6 +28,8 @@ private slots:
 
     void on_pushButton_3_clicked();
 
+    void on_triggerSpinBox_valueChanged(double arg1);
+
 private:
     Ui::Window *ui;
 };
